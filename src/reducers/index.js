@@ -1,0 +1,1 @@
+export slide from './slide'
