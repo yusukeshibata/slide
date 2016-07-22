@@ -1,0 +1,24 @@
+{
+  "name": "slide",
+  "version": "1.0.0",
+  "description": "Slide show generator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yusukeshibata/slide.git"
+  },
+  "keywords": [
+    "slideshow",
+    "react",
+    "generator"
+  ],
+  "author": "Yusuke Shibata <shibata@fata.io> (https://github.com/yusukeshibata)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yusukeshibata/slide/issues"
+  },
+  "homepage": "https://github.com/yusukeshibata/slide#readme"
+}
