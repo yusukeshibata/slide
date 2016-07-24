@@ -7,7 +7,12 @@ html
 		meta(name='description' content='')
 		meta(name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
 	body
+		script#data(type='application/json')
+			include datas/test.json
 		#app
 		if process.env.NODE_ENV=='development'
 			script __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
-		script(type='text/javascript' src='/assets/app.js')
+			script(type='text/javascript' src='/assets/app.js')
+		else
+			script(type='text/javascript')
+				include ../production/assets/app.js

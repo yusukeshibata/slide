@@ -25,6 +25,7 @@ module.exports = {
 	resolve: {
 		extensions: ['', '.js', '.jsx'],
 		alias: {
+			datas: `${defaultSettings.srcPath}/datas/`,
 			modules: `${defaultSettings.srcPath}/modules/`,
 			reducers: `${defaultSettings.srcPath}/reducers/`,
 			actions: `${defaultSettings.srcPath}/actions/`,

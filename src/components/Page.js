@@ -1,13 +1,11 @@
-import 'styles/App.less'
+import 'normalize.css'
+import 'styles/Page.less'
 import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import * as action from 'actions/slide'
 import { Link } from 'react-router'
-import DocumentTitle from 'react-document-title'
 import classNames from 'classnames'
-import Slide from 'components/Slide'
 
-class App extends Component {
+class Page extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -15,33 +13,31 @@ class App extends Component {
 	}
 	componentDidMount() {
 		const { dispatch } = this.props
-		let that = this
 	}
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
 	}
 	render() {
-		const {
-			routes,
-			route,
-			children
-		} = this.props
+		let { html,index,width,height } = this.props
 		return (
-			<DocumentTitle
-				title='Slide'
+			<div
+				className='page-component'
+				style={{
+					left:index*width,
+					width:width,
+					height:height
+				}}
 			>
-				<div className='app-component'>
-					<Slide/>
-				</div>
-			</DocumentTitle>
+				<div className='page-container' dangerouslySetInnerHTML={{__html:html}}/>
+			</div>
 		)
 	}
 }
 //
-App.contextTypes = {
+Page.contextTypes = {
 	router: React.PropTypes.object.isRequired
 }
-App.propTypes = {
+Page.propTypes = {
 }
 function mapStateToProps(state, ownProps) {
 	return {
@@ -49,4 +45,4 @@ function mapStateToProps(state, ownProps) {
 	}
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(Page)

@@ -1,3 +1,4 @@
+.DS_Store
 # Logs
 logs
 *.log
@@ -30,4 +31,4 @@ node_modules
 bower_components/
 /development/
 /production/
-/source/
+/src/datas/
