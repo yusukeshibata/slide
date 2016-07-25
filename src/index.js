@@ -11,6 +11,7 @@ import {getStoredState, persistStore, autoRehydrate} from 'redux-persist'
 import createLogger from 'redux-logger'
 import * as reducers from 'reducers'
 import App from 'components/App'
+import Slide from 'components/Slide'
 //import {whyDidYouUpdate} from 'why-did-you-update'
 
 if(process.env.NODE_ENV !== 'production') {
@@ -53,9 +54,7 @@ getStoredState(persistConfig,(err,initialState) => {
 			{ /* Tell the Router to use our enhanced history */ }
 			<Router history={history}>
 				<Route path='/' component={App}>
-					{/*
-					<IndexRoute component={Page}/>
-					*/}
+					<Route path=':index' component={Slide}/>
 				</Route>
 			</Router>
 		</Provider>,

@@ -11,6 +11,7 @@ class Slide extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
+			dx:0,
 			index:0,
 			width:window.innerWidth,
 			height:window.innerHeight,
@@ -20,7 +21,6 @@ class Slide extends Component {
 			}
 		}
 		this.onResize = this.onResize.bind(this)
-		this.onClick = this.onClick.bind(this)
 		this.onKeyDown = this.onKeyDown.bind(this)
 		this.onMouseMove = this.onMouseMove.bind(this)
 		this.onMouseUp = this.onMouseUp.bind(this)
@@ -34,6 +34,8 @@ class Slide extends Component {
 	}
 	onKeyDown(evt) {
 		let { index,data } = this.state
+		if(evt.metaKey) return
+		evt.preventDefault()
 		switch(evt.keyCode) {
 		case 39:
 			index = index+1
@@ -45,27 +47,20 @@ class Slide extends Component {
 		}
 		if(index < 0) index = 0
 		if(index > data.pages.length-1) index = data.pages.length-1
-		this.setState({
-			index:index
-		})
-	}
-	onClick() {
-		let { data } = this.state
-		//let index = (this.state.index+1)%data.pages.length
-		//this.setState({
-		//	index:index
-		//})
+		this.context.router.push('/'+index)
 	}
 	componentDidMount() {
-		const { dispatch } = this.props
+		const { route,dispatch } = this.props
 		let that = this
 		window.addEventListener('keydown',this.onKeyDown)
 		window.addEventListener('resize',this.onResize)
 		//
-		let data = document.getElementById('data').text
+		let data = JSON.parse(document.getElementById('data').text)
 		this.setState({
-			data:JSON.parse(data)
+			data:data,
+			index:parseInt(route.index)||0
 		})
+		console.log(data.attributes)
 	}
 	componentWillUnmount() {
 		window.removeEventListener('keydown',this.onKeyDown)
@@ -73,6 +68,12 @@ class Slide extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
+		const { index } = this.state
+		if(index !== nextProps.route.index) {
+			this.setState({
+				index:parseInt(nextProps.route.index)||0
+			})
+		}
 	}
 	onMouseUp(evt) {
 		let { dx,index,width,data } = this.state
@@ -112,11 +113,14 @@ class Slide extends Component {
 		let m = matrix({ tx:dx-index*width })
 		return (
 			<div
+				ref='component'
 				className={classNames({
 					'slide-component':true,
 					'dragging':dragging
 				})}
-				onClick={this.onClick}
+				style={{
+					background:data.attributes ? data.attributes.background : undefined
+				}}
 				onMouseDown={this.onMouseDown}
 				onMouseUp={this.onMouseUp}
 				onMouseMove={this.onMouseMove}

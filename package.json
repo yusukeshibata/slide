@@ -5,12 +5,15 @@
   "main": "karma.conf.js",
   "scripts": {
     "updates": "ncu -ua && npm install",
-    "build:production": "NODE_ENV=production webpack && NODE_ENV=production jade src --obj config/production.json --out production",
-    "build": "NODE_ENV=development webpack && NODE_ENV=development jade src --obj config/development.json --pretty --out development",
+    "jade": "NODE_ENV=development jade src --obj config/development.json --out development",
+    "jade:production": "NODE_ENV=production jade src --obj config/production.json --out production",
+    "build:production": "NODE_ENV=production webpack && npm run jade:production",
+    "build": "NODE_ENV=development webpack && npm run jade",
     "lint": "eslint ./src",
     "posttest": "npm run lint",
     "start": "NODE_ENV=development node server.js",
     "test": "karma start",
+    "build:test": "node bin/build.js -o src/datas/test.json ~/Desktop/test.md && npm run jade",
     "test:watch": "karma start --autoWatch=true --singleRun=false"
   },
   "repository": {
@@ -103,6 +106,8 @@
   "license": "MIT",
   "dependencies": {
     "datauri": "^1.0.4",
+    "front-matter": "^2.1.0",
+    "request": "^2.74.0",
     "yargs": "^4.8.1"
   }
 }

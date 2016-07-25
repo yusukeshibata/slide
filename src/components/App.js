@@ -12,6 +12,7 @@ class App extends Component {
 		super(props)
 		this.state = {
 		}
+		this.onFullscreen = this.onFullscreen.bind(this)
 	}
 	componentDidMount() {
 		const { dispatch } = this.props
@@ -20,8 +21,33 @@ class App extends Component {
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
 	}
+	getFullscreen() {
+		if(document.fullscreenElement) {
+			return document.fullscreenElement
+		} else if(document.webkitFullscreenElement) {
+			return document.webkitFullscreenElement
+		} else if(document.mozFullScreenElement) {
+			document.mozFullScreenElement
+		} else if(document.msFullscreenElement) {
+			document.msFullscreenElement
+		}
+	}
+	onFullscreen() {
+		let elem = this.refs.slide
+		if(elem.requestFullscreen) {
+			elem.requestFullscreen()
+		} else if(elem.webkitRequestFullscreen) {
+			elem.webkitRequestFullscreen()
+		} else if(elem.mozRequestFullScreen) {
+			elem.mozRequestFullScreen()
+		} else if(elem.msRequestFullscreen) {
+			elem.msRequestFullscreen()
+		}
+		this.context.router.push('/0')
+	}
 	render() {
 		const {
+			fullscreen,
 			routes,
 			route,
 			children
@@ -30,8 +56,18 @@ class App extends Component {
 			<DocumentTitle
 				title='Slide'
 			>
-				<div className='app-component'>
-					<Slide/>
+				<div>
+				{!children &&
+					<div
+						className='app-start'
+						onClick={this.onFullscreen}
+					>
+					Click to start!
+					</div>
+				}
+				<div ref='slide' className='app-component'>
+					{ children }
+				</div>
 				</div>
 			</DocumentTitle>
 		)
