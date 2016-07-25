@@ -1,3 +1,4 @@
+@clr: #2196f2;
 .slide-component {
 	font-size:30px;
 	@media(max-width:640px) {
@@ -8,7 +9,7 @@
 	left:0;
 	right:0;
 	bottom:0;
-	background:#2196F3;
+	background:@clr;
 	&:after {
 		display:block;
 		content:'';
@@ -46,11 +47,21 @@
 		line-height:30px;
 		.slide-title {
 			display:inline;
-			//font-weight:bold;
 			margin-right:1em;
+			display:none;
 		}
-		.slide-status {
-			display:inline;
+		.slide-bar {
+			position:fixed;
+			left:0;
+			right:0;
+			bottom:0;
+			height:4px;
+			background:black;
+			.slide-progress {
+				background:white;
+				display:block;
+				transition:width 0.2s ease-in-out;
+			}
 		}
 	}
 }

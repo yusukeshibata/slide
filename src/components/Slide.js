@@ -143,7 +143,14 @@ class Slide extends Component {
 				</div>
 				<div className='slide-footer'>
 					<div className='slide-title'>{data.title}</div>
-					<div className='slide-status'>{index+1} / { data.pages.length}</div>
+					<div className='slide-bar'>
+						<div
+							className='slide-progress'
+							style={{
+								width:(index+1)/data.pages.length*100+'%'
+							}}
+						>{index+1} / { data.pages.length}</div>
+					</div>
 				</div>
 			</div>
 		)
