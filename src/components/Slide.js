@@ -85,9 +85,7 @@ class Slide extends Component {
 			let newIndex = index + (dx > 0 ? -1 : 1)
 			if(newIndex < 0) newIndex = 0
 			if(newIndex > data.pages.length-1) newIndex = data.pages.length-1
-			this.setState({
-				index:newIndex
-			})
+			this.context.router.push('/'+newIndex)
 		}
 	}
 	onMouseMove(evt) {
