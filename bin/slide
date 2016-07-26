@@ -114,14 +114,22 @@ var build = function(filepath,opt,callback) {
 }
 
 var filepath = argv._[0]
+if(!filepath) {
+	console.error('File is not specified.')
+	return
+}
 
 if(argv.watch) {
 	console.warn('...')
 } else {
 	build(filepath,argv,function(err,data) {
+		if(err) {
+			console.error(err.message)
+			return
+		}
 		var input = path.parse(filepath)
 		var output = argv.o || path.resolve(input.dir,input.name+'.html')
-		var fn = jade.compileFile('src/index.jade')
+		var fn = jade.compileFile(__dirname+'/../src/index.jade')
 		var html = fn({
 			data:JSON.stringify(data),
 			process:process
