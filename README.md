@@ -11,7 +11,7 @@ Demo
 ----
 Demo is generated with the command below.
 ```
-slideshow-generator https://raw.githubusercontent.com/hemanth/functional-programming-jargon/master/readme.md -o index.html
+slideshow-generator https://raw.githubusercontent.com/facebookincubator/create-react-app/master/README.md -o index.html
 ```
 
 [https://yusukeshibata.github.io/slideshow-generator](https://yusukeshibata.github.io/slideshow-generator)
