@@ -60,7 +60,10 @@ var build = function(body,input,opt,callback) {
 				async.each(Object.keys(dataqueue),function(key,callback) {
 					var data = dataqueue[key]
 					if(data.remote) {
-						request(data.url,function(err,res,body) {
+						request({
+							uri:data.url,
+							encoding: null
+						},function(err,res,body) {
 							var datauri = new DataUri()
 							datauri.format(data.ext, body)
 							dataqueue[key] = datauri.content
