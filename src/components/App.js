@@ -13,11 +13,22 @@ class App extends Component {
 		this.state = {
 		}
 		this.onFullscreen = this.onFullscreen.bind(this)
+		this.onStart = this.onStart.bind(this)
+		this.onResize = this.onResize.bind(this)
+	}
+	onResize() {
+		this.setState({
+			fullscreen:this.getFullscreen()
+		})
 	}
 	componentDidMount() {
 		const { dispatch } = this.props
 		let that = this
 		dispatch(action.slide.fetch())
+		window.addEventListener('resize',this.onResize)
+	}
+	componentWillUmount() {
+		window.removeEventListener('resize',this.onResize)
 	}
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
@@ -28,9 +39,9 @@ class App extends Component {
 		} else if(document.webkitFullscreenElement) {
 			return document.webkitFullscreenElement
 		} else if(document.mozFullScreenElement) {
-			document.mozFullScreenElement
+			return document.mozFullScreenElement
 		} else if(document.msFullscreenElement) {
-			document.msFullscreenElement
+			return document.msFullscreenElement
 		}
 	}
 	onFullscreen() {
@@ -44,6 +55,8 @@ class App extends Component {
 		} else if(elem.msRequestFullscreen) {
 			elem.msRequestFullscreen()
 		}
+	}
+	onStart() {
 		this.context.router.push('/0')
 	}
 	render() {
@@ -54,7 +67,6 @@ class App extends Component {
 			children,
 			slide
 		} = this.props
-		console.log(route)
 		return (
 			<DocumentTitle
 				title={slide ? (route.index!==undefined ? (parseInt(route.index)+1)+'/'+slide.pages.length+' ' : '')+slide.title : 'Slide' }
@@ -65,7 +77,7 @@ class App extends Component {
 							<div className='app-start'>
 								<div
 									className='app-start-button'
-									onClick={this.onFullscreen}
+									onClick={this.onStart}
 								>
 								{slide.title}
 								</div>
@@ -74,6 +86,12 @@ class App extends Component {
 						<div ref='slide' className='app-component'>
 							{ children }
 						</div>
+						{ !fullscreen &&
+						<div
+							onClick={this.onFullscreen}
+							className='app-fullscreen'
+						/>
+						}
 					</div>
 				}
 			</DocumentTitle>
