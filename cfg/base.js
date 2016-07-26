@@ -10,7 +10,7 @@ module.exports = {
 	debug: true,
 	devtool: 'eval',
 	output: {
-		path: path.join(__dirname, '/../'+process.env.NODE_ENV+'/assets'),
+		path: path.join(__dirname, '/../'+process.env.NODE_ENV),
 		filename: 'app.js',
 		publicPath: defaultSettings.publicPath
 	},

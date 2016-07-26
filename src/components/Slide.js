@@ -117,7 +117,8 @@ class Slide extends Component {
 					'dragging':dragging
 				})}
 				style={{
-					background:data.attributes ? data.attributes.background : undefined
+					background:data.attributes ? data.attributes.background : undefined,
+					color:data.attributes ? data.attributes.color : undefined
 				}}
 				onMouseDown={this.onMouseDown}
 				onMouseUp={this.onMouseUp}

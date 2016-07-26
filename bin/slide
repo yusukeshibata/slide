@@ -1,0 +1,96 @@
+var path = require('path')
+var fs = require('fs')
+var jade = require('jade')
+var argv = require('minimist')(process.argv.slice(2));
+var marked = require('marked')
+var async = require('async')
+var request = require('request')
+var fm = require('front-matter')
+var _ = require('lodash')
+var DataUri = require('datauri')
+
+var build = function(filepath,opt,callback) {
+	if(!opt) opt = {}
+	var input = path.parse(filepath)
+	fs.readFile(filepath,'utf8',function(err,buf) {
+		var content = fm(buf)
+		var tokens = marked.lexer(content.body,{
+			gfm: true,
+			tables: true,
+			breaks: true,
+			pedantic: true,
+			sanitize: true,
+			smartLists: true,
+			smartypants: true
+		})
+		var title = ''
+		var pages = []
+		tokens.forEach(function(token) {
+			if(token.type==='heading') {
+				pages.push({
+					tokens:[]
+				})
+			}
+			if(token.type==='heading' && token.depth === 1) {
+				title = token.text
+			}
+			pages[pages.length-1].tokens.push(token)
+		})
+		async.each(pages,function(page,callback) {
+			async.waterfall([
+				// get resources
+				function(callback) {
+					if(opt.online) {
+						callback(null,{})
+						return
+					}
+				},
+				// generate html
+				function(dataqueue,callback) {
+					var renderer = new marked.Renderer()
+					renderer.image = function(href,title,text) {
+						var content = opt.online ? href : dataqueue[href]
+						return `<img src="${content}" alt="${text}"/>`
+					}
+					tokens = _.cloneDeep(page.tokens)
+					tokens.links = {}
+					var html = marked.parser(tokens,{ renderer:renderer })
+					delete page.tokens
+					page.html = html
+					callback()
+				},
+			],function(err) {
+				callback(err)
+			})
+		},function(err) {
+			callback(err,{
+				attributes:content.attributes,
+				title:title,
+				pages:pages
+			})
+		})
+	})
+}
+
+var filepath = argv._[0]
+
+if(argv.watch) {
+	console.warn('...')
+} else {
+	build(filepath,argv,function(err,data) {
+		var input = path.parse(filepath)
+		var output = argv.o || path.resolve(input.dir,input.name+'.html')
+		var fn = jade.compileFile('src/index.jade')
+		var html = fn({
+			data:JSON.stringify(data),
+			process:process
+		})
+		fs.writeFile(output,html,function(err) {
+			if(err) {
+				console.error(err)
+				return
+			}
+			console.log('output:',output)
+		})
+	})
+}

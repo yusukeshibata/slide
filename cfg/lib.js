@@ -1,12 +1,8 @@
 'use strict'
-
 let path = require('path')
 let webpack = require('webpack')
-
 let baseConfig = require('./base')
 let defaultSettings = require('./defaults')
-
-// Add needed plugins here
 let BowerWebpackPlugin = require('bower-webpack-plugin')
 
 let config = Object.assign({}, baseConfig, {
@@ -16,7 +12,7 @@ let config = Object.assign({}, baseConfig, {
 	plugins: [
 		new webpack.optimize.DedupePlugin(),
 		new webpack.DefinePlugin({
-			'process.env.NODE_ENV': '"production"'
+			'process.env.NODE_ENV': '"lib"'
 		}),
 		new BowerWebpackPlugin({
 			searchResolveModulesDirectories: false
