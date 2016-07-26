@@ -1,4 +1,35 @@
+.animation(@duration:300ms) {
+  animation: animation @duration linear both;
+}
+@keyframes animation {
+  0%			{ 	transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  4.2%		{ 	transform: matrix3d(0.923, 0, 0, 0, 0, 0.923, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  8.34%		{ 	transform: matrix3d(0.876, 0, 0, 0, 0, 0.876, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  12.55%	{ 	transform: matrix3d(0.846, 0, 0, 0, 0, 0.846, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  16.68%	{ 	transform: matrix3d(0.828, 0, 0, 0, 0, 0.828, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  25.03%	{ 	transform: matrix3d(0.81, 0, 0, 0, 0, 0.81, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  33.23%	{ 	transform: matrix3d(0.803, 0, 0, 0, 0, 0.803, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  33.33%	{ 	transform: matrix3d(0.803, 0, 0, 0, 0, 0.803, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  33.37%	{ 	transform: matrix3d(0.804, 0, 0, 0, 0, 0.804, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  37.54%	{ 	transform: matrix3d(0.879, 0, 0, 0, 0, 0.879, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  41.68%	{ 	transform: matrix3d(0.925, 0, 0, 0, 0, 0.925, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  45.88%	{ 	transform: matrix3d(0.955, 0, 0, 0, 0, 0.955, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  50.02%	{ 	transform: matrix3d(0.973, 0, 0, 0, 0, 0.973, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  50.05%	{ 	transform: matrix3d(0.973, 0, 0, 0, 0, 0.973, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  58.36%	{ 	transform: matrix3d(0.99, 0, 0, 0, 0, 0.99, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  66.67%	{ 	transform: matrix3d(0.997, 0, 0, 0, 0, 0.997, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  66.7%		{ 	transform: matrix3d(0.997, 0, 0, 0, 0, 0.997, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  83.38%	{ 	transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  100%		{ 	transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); } 
+}
+
+@duration:300ms;
+
 .slide-component {
+	.transition & {
+		overflow:hidden;
+		//.animation(@duration);
+	}
 	font-size:30px;
 	@media(max-width:640px) {
 		font-size:15px;
@@ -24,7 +55,7 @@
 		width:100%;
 		height:100%;
 		transform-origin:0 0;
-		transition:transform 0.2s ease-in-out;
+		transition:transform @duration ease-in-out;
 		position:relative;
 	}
 	&.dragging {

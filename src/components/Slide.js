@@ -63,10 +63,17 @@ class Slide extends Component {
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
 		const { index } = this.state
+		let that = this
 		if(index !== nextProps.route.index) {
 			this.setState({
+				transition:true,
 				index:parseInt(nextProps.route.index)||0
 			})
+			setTimeout(function() {
+				that.setState({
+					transition:false
+				})
+			},300)
 		}
 	}
 	onMouseUp(evt) {
@@ -101,10 +108,13 @@ class Slide extends Component {
 		})
 	}
 	render() {
-		let { dragging,dx,index,width,height } = this.state
+		let { transition,dragging,dx,index,width,height } = this.state
 		let { slide } = this.props
 		let scale = 1
 		let m = matrix({ tx:dx-index*width })
+		document.body.className = classNames({
+			transition:transition
+		})
 		return (
 			<div
 				ref='component'
