@@ -45,7 +45,7 @@ class App extends Component {
 		}
 	}
 	onFullscreen() {
-		let elem = this.refs.slide
+		let elem = document.body
 		if(elem.requestFullscreen) {
 			elem.requestFullscreen()
 		} else if(elem.webkitRequestFullscreen) {
@@ -60,8 +60,8 @@ class App extends Component {
 		this.context.router.push('/0')
 	}
 	render() {
+		const { fullscreen } = this.state
 		const {
-			fullscreen,
 			routes,
 			route,
 			children,
@@ -72,7 +72,7 @@ class App extends Component {
 				title={slide ? (route.index!==undefined ? (parseInt(route.index)+1)+'/'+slide.pages.length+' ' : '')+slide.title : 'Slide' }
 			>
 				{ slide &&
-					<div>
+					<div ref='slide'>
 						{!children &&
 							<div className='app-start'>
 								<div
@@ -83,9 +83,11 @@ class App extends Component {
 								</div>
 							</div>
 						}
-						<div ref='slide' className='app-component'>
+						{ children &&
+						<div className='app-component'>
 							{ children }
 						</div>
+						}
 						{ !fullscreen &&
 						<div
 							onClick={this.onFullscreen}
