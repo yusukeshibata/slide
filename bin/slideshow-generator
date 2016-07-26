@@ -31,10 +31,15 @@ var build = function(body,input,opt,callback) {
 				tokens:[]
 			})
 		}
-		if(token.type==='heading' && token.depth === 1) {
+		if(!title && token.type==='heading' && token.depth === 1) {
 			title = token.text
 		}
 		pages[pages.length-1].tokens.push(token)
+		if(token.depth === 1) {
+			pages.push({
+				tokens:[]
+			})
+		}
 	})
 	async.each(pages,function(page,callback) {
 		async.waterfall([
@@ -60,7 +65,10 @@ var build = function(body,input,opt,callback) {
 				async.each(Object.keys(dataqueue),function(key,callback) {
 					var data = dataqueue[key]
 					if(data.remote) {
-						request(data.url,function(err,res,body) {
+						request({
+							uri:data.url,
+							encoding: null
+						},function(err,res,body) {
 							var datauri = new DataUri()
 							datauri.format(data.ext, body)
 							dataqueue[key] = datauri.content
