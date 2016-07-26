@@ -31,10 +31,15 @@ var build = function(body,input,opt,callback) {
 				tokens:[]
 			})
 		}
-		if(token.type==='heading' && token.depth === 1) {
+		if(!title && token.type==='heading' && token.depth === 1) {
 			title = token.text
 		}
 		pages[pages.length-1].tokens.push(token)
+		if(token.depth === 1) {
+			pages.push({
+				tokens:[]
+			})
+		}
 	})
 	async.each(pages,function(page,callback) {
 		async.waterfall([
