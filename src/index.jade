@@ -4,6 +4,8 @@ html
 		meta(charset='utf-8')
 		title Slide
 		meta(name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+		if watcher
+			script(src='http://localhost:#{watcher.config.port}/livereload.js?snipver=1')
 	body
 		#app
 		script#data(type='application/json')!=data

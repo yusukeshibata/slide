@@ -10,6 +10,8 @@ var request = require('request')
 var fm = require('front-matter')
 var _ = require('lodash')
 var DataUri = require('datauri')
+var connect  = require('connect')
+var livereload = require('livereload')
 
 var build = function(body,input,opt,callback) {
 	if(!opt) opt = {}
@@ -26,12 +28,13 @@ var build = function(body,input,opt,callback) {
 	var title = ''
 	var pages = []
 	tokens.forEach(function(token) {
-		if(token.type==='heading') {
+		if(token.type==='heading' || pages.length === 0) {
 			pages.push({
 				tokens:[]
 			})
 		}
-		if(!title && token.type==='heading' && token.depth === 1) {
+		if(!title) {
+			console.log(token)
 			title = token.text
 		}
 		pages[pages.length-1].tokens.push(token)
@@ -117,6 +120,39 @@ var build = function(body,input,opt,callback) {
 var url = argv._[0]
 if(!url) {
 	console.error('File is not specified.')
+	return
+}
+if(argv.watch) {
+	var input = path.parse(url)
+	var server = connect()
+	var watcher = livereload.createServer({
+		exts:[input.ext.substr(1)]
+	})
+	server.use(function(req,res) {
+		if(req.url!=='/') {
+			res.end()
+			return
+		}
+		console.log('reloading:',url)
+		fs.readFile(url,'utf8',function(err,body) {
+			if(err) {
+				res.end(err)
+				return
+			}
+			build(body,input,argv,function(err,data) {
+				var fn = jade.compileFile(__dirname+'/../src/index.jade')
+				res.end(fn({
+					watcher:watcher,
+					data:JSON.stringify(data),
+					process:process
+				}))
+			})
+		})
+	})
+	var port = argv.port||argv.p||8080
+	server.listen(port)
+	watcher.watch(input.dir)
+	console.log('Started:http://localhost:'+port+', Watching:',url)
 	return
 }
 
