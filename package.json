@@ -7,7 +7,7 @@
   "preferGlobal": true,
   "scripts": {
     "updates": "ncu -u && npm install",
-    "build": "NODE_ENV=development node bin/slide ~/Desktop/test.md -o development/index.html",
+    "build": "NODE_ENV=development node bin/slide https://raw.githubusercontent.com/facebookincubator/create-react-app/master/README.md -o development/index.html",
     "build:lib": "NODE_ENV=lib webpack",
     "lint": "eslint ./src",
     "posttest": "npm run lint",

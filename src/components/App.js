@@ -1,7 +1,7 @@
 import 'styles/App.less'
 import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import * as action from 'actions/slide'
+import * as action from 'actions'
 import { Link } from 'react-router'
 import DocumentTitle from 'react-document-title'
 import classNames from 'classnames'
@@ -17,6 +17,7 @@ class App extends Component {
 	componentDidMount() {
 		const { dispatch } = this.props
 		let that = this
+		dispatch(action.slide.fetch())
 	}
 	componentWillReceiveProps(nextProps) {
 		const { dispatch } = this.props
@@ -50,25 +51,30 @@ class App extends Component {
 			fullscreen,
 			routes,
 			route,
-			children
+			children,
+			slide
 		} = this.props
 		return (
 			<DocumentTitle
 				title='Slide'
 			>
-				<div>
-				{!children &&
-					<div
-						className='app-start'
-						onClick={this.onFullscreen}
-					>
-					Click to start!
+				{ slide &&
+					<div>
+						{!children &&
+							<div className='app-start'>
+								<div
+									className='app-start-button'
+									onClick={this.onFullscreen}
+								>
+								{slide.title}
+								</div>
+							</div>
+						}
+						<div ref='slide' className='app-component'>
+							{ children }
+						</div>
 					</div>
 				}
-				<div ref='slide' className='app-component'>
-					{ children }
-				</div>
-				</div>
 			</DocumentTitle>
 		)
 	}
@@ -81,7 +87,8 @@ App.propTypes = {
 }
 function mapStateToProps(state, ownProps) {
 	return {
-		route:ownProps.params
+		route:ownProps.params,
+		slide:state.slide.data
 	}
 }
 

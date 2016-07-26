@@ -7,13 +7,6 @@ body {
 	background: #fff;
 	font-family:sans-serif;
 	letter-spacing:0.02em;
-	a {
-		text-decoration:none;
-		color:#333;
-	}
-	&.no-scroll {
-		overflow:hidden;
-	}
 	* {
 		user-select:none;
 		-webkit-user-select:none;
@@ -30,14 +23,15 @@ body {
 }
 .app-start {
 	position:absolute;
+	cursor:pointer;
 	top:0;
 	left:0;
 	right:0;
 	bottom:0;
 	z-index:10;
-	background:#424242;
 	display:flex;
 	justify-content:center;
 	align-items:center;
+	background:#424242;
 	color:white;
 }

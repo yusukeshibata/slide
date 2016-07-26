@@ -7,7 +7,6 @@ import { Router, Route, IndexRoute, useRouterHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import {getStoredState, persistStore, autoRehydrate} from 'redux-persist'
 import createLogger from 'redux-logger'
 import * as reducers from 'reducers'
 import App from 'components/App'
@@ -25,39 +24,30 @@ const reducer = combineReducers({
 	...reducers,
   routing: routerReducer
 })
+const store = createStore(
+	reducer,
+	applyMiddleware(thunkMiddleware, createLogger())
+)
 
-const persistConfig = {
-	skipRestore: false,
-	blacklist:[]
+if (module.hot) {
+	// Enable Webpack hot module replacement for reducers
+	module.hot.accept('./reducers', () => {
+		const nextRootReducer = require('./reducers').slide
+		store.replaceReducer(nextRootReducer)
+	})
 }
-getStoredState(persistConfig,(err,initialState) => {
-	const store = createStore(
-		reducer,
-		initialState,
-		applyMiddleware(thunkMiddleware, createLogger())
-	)
-	persistStore(store,persistConfig)
 
-	if (module.hot) {
-		// Enable Webpack hot module replacement for reducers
-		module.hot.accept('./reducers', () => {
-			const nextRootReducer = require('./reducers').slide
-			store.replaceReducer(nextRootReducer)
-		})
-	}
+const hashHistory = useRouterHistory(createHashHistory)({ queryKey: false })
+const history = syncHistoryWithStore(hashHistory, store)
 
-	const hashHistory = useRouterHistory(createHashHistory)({ queryKey: false })
-	const history = syncHistoryWithStore(hashHistory, store)
-
-	ReactDOM.render(
-		<Provider store={store}>
-			{ /* Tell the Router to use our enhanced history */ }
-			<Router history={history}>
-				<Route path='/' component={App}>
-					<Route path=':index' component={Slide}/>
-				</Route>
-			</Router>
-		</Provider>,
-		document.getElementById('app')
-	)
-})
+ReactDOM.render(
+	<Provider store={store}>
+		{ /* Tell the Router to use our enhanced history */ }
+		<Router history={history}>
+			<Route path='/' component={App}>
+				<Route path=':index' component={Slide}/>
+			</Route>
+		</Router>
+	</Provider>,
+	document.getElementById('app')
+)

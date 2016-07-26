@@ -14,11 +14,7 @@ class Slide extends Component {
 			dx:0,
 			index:0,
 			width:window.innerWidth,
-			height:window.innerHeight,
-			data:{
-				title:'',
-				pages:[]
-			}
+			height:window.innerHeight
 		}
 		this.onResize = this.onResize.bind(this)
 		this.onKeyDown = this.onKeyDown.bind(this)
@@ -33,7 +29,8 @@ class Slide extends Component {
 		})
 	}
 	onKeyDown(evt) {
-		let { index,data } = this.state
+		let { index } = this.state
+		let { slide } = this.props
 		if(evt.metaKey) return
 		evt.preventDefault()
 		switch(evt.keyCode) {
@@ -46,7 +43,7 @@ class Slide extends Component {
 		default:
 		}
 		if(index < 0) index = 0
-		if(index > data.pages.length-1) index = data.pages.length-1
+		if(index > slide.pages.length-1) index = slide.pages.length-1
 		this.context.router.push('/'+index)
 	}
 	componentDidMount() {
@@ -55,12 +52,9 @@ class Slide extends Component {
 		window.addEventListener('keydown',this.onKeyDown)
 		window.addEventListener('resize',this.onResize)
 		//
-		let data = JSON.parse(document.getElementById('data').text)
 		this.setState({
-			data:data,
 			index:parseInt(route.index)||0
 		})
-		console.log(data.attributes)
 	}
 	componentWillUnmount() {
 		window.removeEventListener('keydown',this.onKeyDown)
@@ -76,7 +70,8 @@ class Slide extends Component {
 		}
 	}
 	onMouseUp(evt) {
-		let { dx,index,width,data } = this.state
+		let { dx,index,width } = this.state
+		let { slide } = this.props
 		this.setState({
 			dragging:false,
 			dx:0
@@ -84,7 +79,7 @@ class Slide extends Component {
 		if(Math.abs(dx) > 50) {
 			let newIndex = index + (dx > 0 ? -1 : 1)
 			if(newIndex < 0) newIndex = 0
-			if(newIndex > data.pages.length-1) newIndex = data.pages.length-1
+			if(newIndex > slide.pages.length-1) newIndex = slide.pages.length-1
 			this.context.router.push('/'+newIndex)
 		}
 	}
@@ -106,7 +101,8 @@ class Slide extends Component {
 		})
 	}
 	render() {
-		let { data,dragging,dx,index,width,height } = this.state
+		let { dragging,dx,index,width,height } = this.state
+		let { slide } = this.props
 		let scale = 1
 		let m = matrix({ tx:dx-index*width })
 		return (
@@ -117,8 +113,8 @@ class Slide extends Component {
 					'dragging':dragging
 				})}
 				style={{
-					background:data.attributes ? data.attributes.background : undefined,
-					color:data.attributes ? data.attributes.color : undefined
+					background:slide.attributes ? slide.attributes.background : undefined,
+					color:slide.attributes ? slide.attributes.color : undefined
 				}}
 				onMouseDown={this.onMouseDown}
 				onMouseUp={this.onMouseUp}
@@ -134,21 +130,21 @@ class Slide extends Component {
 						transform:m.css()
 					}}
 				>
-					{ data.pages.map((page,key) => {
+					{ slide.pages.map((page,key) => {
 						return (
 							<Page index={key} key={key} html={page.html} width={width} height={height}/>
 						)
 					})}
 				</div>
 				<div className='slide-footer'>
-					<div className='slide-title'>{data.title}</div>
+					<div className='slide-title'>{slide.title}</div>
 					<div className='slide-bar'>
 						<div
 							className='slide-progress'
 							style={{
-								width:(index+1)/data.pages.length*100+'%'
+								width:(index+1)/slide.pages.length*100+'%'
 							}}
-						>{index+1} / { data.pages.length}</div>
+						>{index+1} / { slide.pages.length}</div>
 					</div>
 				</div>
 			</div>
@@ -163,7 +159,8 @@ Slide.propTypes = {
 }
 function mapStateToProps(state, ownProps) {
 	return {
-		route:ownProps.params
+		route:ownProps.params,
+		slide:state.slide.data||{pages:[]}
 	}
 }
 

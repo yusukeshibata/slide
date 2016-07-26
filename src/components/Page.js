@@ -28,7 +28,9 @@ class Page extends Component {
 					height:height
 				}}
 			>
-				<div className='page-container' dangerouslySetInnerHTML={{__html:html}}/>
+				<div className='page-container'>
+					<div className='page-body' dangerouslySetInnerHTML={{__html:html}}/>
+				</div>
 			</div>
 		)
 	}
