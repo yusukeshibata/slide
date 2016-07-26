@@ -1,13 +1,13 @@
 {
-  "name": "slide",
+  "name": "slideshow-generator",
   "version": "1.0.0",
   "description": "Slideshow generator",
   "main": "server.js",
-  "bin": "./bin/slide",
+  "bin": "./bin/slideshow-generator",
   "preferGlobal": true,
   "scripts": {
     "updates": "ncu -u && npm install",
-    "build": "NODE_ENV=development node bin/slide https://raw.githubusercontent.com/facebookincubator/create-react-app/master/README.md -o development/index.html",
+    "build": "NODE_ENV=development node bin/slideshow-generator https://raw.githubusercontent.com/facebookincubator/create-react-app/master/README.md -o development/index.html",
     "build:lib": "NODE_ENV=lib webpack",
     "lint": "eslint ./src",
     "posttest": "npm run lint",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yusukeshibata/slide.git"
+    "url": "git+https://github.com/yusukeshibata/slideshow-generator.git"
   },
   "keywords": [
     "slide",
