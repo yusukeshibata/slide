@@ -14,7 +14,8 @@ class Slide extends Component {
 			dx:0,
 			index:0,
 			width:window.innerWidth,
-			height:window.innerHeight
+			height:window.innerHeight,
+			fontsize:100
 		}
 		this.onResize = this.onResize.bind(this)
 		this.onKeyDown = this.onKeyDown.bind(this)
@@ -29,10 +30,11 @@ class Slide extends Component {
 		})
 	}
 	onKeyDown(evt) {
-		let { index } = this.state
-		let { slide } = this.props
+		let { fontsize,index } = this.state
+		let { route,slide } = this.props
 		if(evt.metaKey) return
 		evt.preventDefault()
+		let newFontsize = fontsize
 		switch(evt.keyCode) {
 		case 39:
 			index = index+1
@@ -40,11 +42,25 @@ class Slide extends Component {
 		case 37:
 			index = index-1
 			break
+		case 38:
+			if(evt.shiftKey) newFontsize = newFontsize*1.1
+			break
+		case 40:
+			if(evt.shiftKey) newFontsize = newFontsize*0.9
+			break
+		case 48:
+			newFontsize = 100
+			break
 		default:
 		}
 		if(index < 0) index = 0
 		if(index > slide.pages.length-1) index = slide.pages.length-1
-		this.context.router.push('/'+index)
+		if(route.index !== index) {
+			this.context.router.push('/'+index)
+		}
+		this.setState({
+			fontsize:newFontsize
+		})
 	}
 	componentDidMount() {
 		const { route,dispatch } = this.props
@@ -108,7 +124,7 @@ class Slide extends Component {
 		})
 	}
 	render() {
-		let { transition,dragging,dx,index,width,height } = this.state
+		let { fontsize,transition,dragging,dx,index,width,height } = this.state
 		let { slide } = this.props
 		let scale = 1
 		let m = matrix({ tx:dx-index*width })
@@ -137,6 +153,7 @@ class Slide extends Component {
 				<div
 					className='slide-container'
 					style={{
+						fontSize:fontsize+'%',
 						transform:m.css()
 					}}
 				>
