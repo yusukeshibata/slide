@@ -23,7 +23,6 @@ body {
 }
 .app-start {
 	position:absolute;
-	cursor:pointer;
 	top:0;
 	left:0;
 	right:0;
@@ -34,4 +33,22 @@ body {
 	align-items:center;
 	background:#424242;
 	color:white;
+	.app-start-button {
+		&:before {
+			content:'START ';
+			font-weight:normal;
+		}
+		&:after {
+			content:'';
+			font-weight:normal;
+		}
+		font-weight:bold;
+		cursor:pointer;
+		padding:20px;
+		background:lighten(#424242,10%);
+		border-radius:3px;
+		&:hover {
+			background:lighten(#424242,15%);
+		}
+	}
 }
