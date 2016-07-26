@@ -15,6 +15,10 @@ var build = function(filepath,opt,callback) {
 	if(!opt) opt = {}
 	var input = path.parse(filepath)
 	fs.readFile(filepath,'utf8',function(err,buf) {
+		if(err) {
+			callback(err)
+			return
+		}
 		var content = fm(buf)
 		var tokens = marked.lexer(content.body,{
 			gfm: true,
@@ -46,6 +50,41 @@ var build = function(filepath,opt,callback) {
 						callback(null,{})
 						return
 					}
+					var dataqueue = {}
+					var test = new marked.Renderer()
+					test.image = function(href,title,text) {
+						var check = href.match(/(^https?:)?.*(\.[^\.\?]+)(\?.+)?$/)
+						dataqueue[href] = {
+							remote:!!check[1],
+							ext:check[2],
+							url:check[1] ? href : path.resolve(input.dir,href)
+						}
+					}
+					var tokens = _.cloneDeep(page.tokens)
+					tokens.links = {}
+					marked.parser(tokens,{ renderer:test })
+					async.each(Object.keys(dataqueue),function(key,callback) {
+						var data = dataqueue[key]
+						if(data.remote) {
+							request(data.url,function(err,res,body) {
+								var datauri = new DataUri()
+								datauri.format(data.ext, body)
+								dataqueue[key] = datauri.content
+								callback()
+							})
+						} else {
+							DataUri.promise(data.url)
+								.then(function(content) {
+									dataqueue[key] = content
+									callback()
+								})
+								.catch(function(err) {
+									callback(err)
+								})
+						}
+					},function(err) {
+						callback(err,dataqueue)
+					})
 				},
 				// generate html
 				function(dataqueue,callback) {
@@ -89,7 +128,7 @@ if(argv.watch) {
 		})
 		fs.writeFile(output,html,function(err) {
 			if(err) {
-				console.error(err)
+				console.error('Error:',err)
 				return
 			}
 			console.log('output:',output)
