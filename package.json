@@ -1,6 +1,6 @@
 {
   "name": "slideshow-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Slideshow generator",
   "main": "server.js",
   "bin": "./bin/slideshow-generator",
@@ -8,7 +8,7 @@
   "scripts": {
     "updates": "ncu -u && npm install",
     "build": "NODE_ENV=development node bin/slideshow-generator https://raw.githubusercontent.com/facebookincubator/create-react-app/master/README.md -o development/index.html",
-    "build:lib": "NODE_ENV=lib webpack",
+    "build:lib": "NODE_ENV=production webpack",
     "lint": "eslint ./src",
     "posttest": "npm run lint",
     "start": "NODE_ENV=development node server.js",
