@@ -34,7 +34,6 @@ var build = function(body,input,opt,callback) {
 			})
 		}
 		if(!title) {
-			console.log(token)
 			title = token.text
 		}
 		pages[pages.length-1].tokens.push(token)
