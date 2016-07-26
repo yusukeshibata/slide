@@ -54,9 +54,10 @@ class App extends Component {
 			children,
 			slide
 		} = this.props
+		console.log(route)
 		return (
 			<DocumentTitle
-				title='Slide'
+				title={slide ? (route.index ? route.index+'/'+slide.pages.length+' ' : '')+slide.title : 'Slide' }
 			>
 				{ slide &&
 					<div>
