@@ -8,7 +8,7 @@ html
 			script(src='http://localhost:#{watcher.config.port}/livereload.js?snipver=1')
 	body
 		#app
-		script#data(type='application/json')!=data
+		script#data(type='plain/text')=data
 		if process.env.NODE_ENV==='development'
 			script __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
 			script(type='text/javascript' src='/app.js')
