@@ -72,7 +72,13 @@ class App extends Component {
 				title={slide ? (route.index!==undefined ? (parseInt(route.index)+1)+'/'+slide.pages.length+' ' : '')+slide.title : 'Slide' }
 			>
 				{ slide &&
-					<div ref='slide'>
+					<div
+						ref='slide'
+						className={{
+							'app-component':true,
+							fullscreen:!!fullscreen
+						}}
+					>
 						{!children &&
 							<div className='app-start'>
 								<div

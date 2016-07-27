@@ -72,8 +72,17 @@
 		right:0;
 		bottom:0;
 		text-align:center;
-		color:white;
+		a {
+			color:white;
+			text-decoration:none;
+		}
 		font-size:40%;
+		@media(max-width:840px) {
+			font-size:60%;
+		}
+		@media(max-width:640px) {
+			font-size:80%;
+		}
 		line-height:2em/0.4;
 		.slide-title {
 			display:inline;
