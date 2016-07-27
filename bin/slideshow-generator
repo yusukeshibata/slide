@@ -13,6 +13,7 @@ var DataUri = require('datauri')
 var connect  = require('connect')
 var livereload = require('livereload')
 var striptags = require('striptags')
+var highlight = require('highlight.js')
 
 var build = function(body,input,opt,callback) {
 	if(!opt) opt = {}
@@ -89,13 +90,21 @@ var build = function(body,input,opt,callback) {
 			// generate html
 			function(dataqueue,callback) {
 				var renderer = new marked.Renderer()
+				renderer.heading = function(text,level) {
+					return `<h${level}>${text}</h${level}>`
+				}
 				renderer.image = function(href,title,text) {
 					var content = opt.online ? href : dataqueue[href]
 					return `<img src="${content}" alt="${text}"/>`
 				}
 				tokens = _.cloneDeep(page.tokens)
 				tokens.links = {}
-				var html = marked.parser(tokens,{ renderer:renderer })
+				var html = marked.parser(tokens,{
+					renderer:renderer,
+					highlight:function(code) {
+						return highlight.highlightAuto(code).value
+					}
+				})
 				var titletokens = [titletoken]
 				titletokens.links = {}
 				title = striptags(marked.parser(titletokens,{ renderer:renderer }))

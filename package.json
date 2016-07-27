@@ -45,6 +45,7 @@
     "eslint-plugin-react": "^5.2.2",
     "file-loader": "^0.9.0",
     "glob": "^7.0.5",
+    "highlight.js": "^9.5.0",
     "immutable": "^3.8.1",
     "isparta-instrumenter-loader": "^1.0.1",
     "karma": "^1.1.1",
