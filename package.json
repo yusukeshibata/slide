@@ -1,6 +1,6 @@
 {
   "name": "slideshow-generator",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Slideshow generator",
   "main": "server.js",
   "bin": "./bin/slideshow-generator",
@@ -101,6 +101,7 @@
     "lodash": "^4.14.0",
     "marked": "^0.3.5",
     "minimist": "^1.2.0",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "striptags": "^2.1.1"
   }
 }

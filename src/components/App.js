@@ -84,8 +84,8 @@ class App extends Component {
 								<div
 									className='app-start-button'
 									onClick={this.onStart}
+									dangerouslySetInnerHTML={{__html:slide.title}}
 								>
-								{slide.title}
 								</div>
 							</div>
 						}
