@@ -30,26 +30,16 @@ class Slide extends Component {
 		})
 	}
 	onKeyDown(evt) {
-		let { fontsize,index } = this.state
+		let { index } = this.state
 		let { route,slide } = this.props
 		if(evt.metaKey) return
 		evt.preventDefault()
-		let newFontsize = fontsize
 		switch(evt.keyCode) {
 		case 39:
 			index = index+1
 			break
 		case 37:
 			index = index-1
-			break
-		case 38:
-			if(evt.shiftKey) newFontsize = newFontsize*1.1
-			break
-		case 40:
-			if(evt.shiftKey) newFontsize = newFontsize*0.9
-			break
-		case 48:
-			newFontsize = 100
 			break
 		default:
 		}
@@ -58,9 +48,6 @@ class Slide extends Component {
 		if(route.index !== index) {
 			this.context.router.push('/'+index)
 		}
-		this.setState({
-			fontsize:newFontsize
-		})
 	}
 	componentDidMount() {
 		const { route,dispatch } = this.props
@@ -153,7 +140,7 @@ class Slide extends Component {
 				<div
 					className='slide-container'
 					style={{
-						fontSize:fontsize+'%',
+						fontSize:slide.attributes ? slide.attributes.fontsize : '100%',
 						transform:m.css()
 					}}
 				>
