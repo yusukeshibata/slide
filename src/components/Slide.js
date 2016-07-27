@@ -164,7 +164,7 @@ class Slide extends Component {
 					})}
 				</div>
 				<div className='slide-footer'>
-					<div className='slide-title'>{slide.title}</div>
+					<Link to='/' className='slide-title'>{slide.title}</Link>
 					<div className='slide-bar'>
 						<div
 							className='slide-progress'
