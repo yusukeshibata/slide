@@ -1,5 +1,5 @@
 import 'normalize.css'
-import 'highlight.js/styles/default.css';
+import 'highlight.js/styles/arta.css';
 import 'styles/Page.less'
 import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
