@@ -28,6 +28,14 @@ class Slide extends Component {
 			width:window.innerWidth,
 			height:window.innerHeight
 		})
+		document.body.className = classNames({
+			dragging:true
+		})
+		setTimeout(function() {
+			document.body.className = classNames({
+				dragging:false
+			})
+		},100)
 	}
 	onKeyDown(evt) {
 		let { index } = this.state
