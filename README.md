@@ -40,6 +40,13 @@ slideshow-generator test.md -p 8080 -watch
 slideshow-generator test.md -o test.html
 ```
 
+##### Online mode
+Never fetch resource from url.
+
+```
+slideshow-generator test.md -o test.html --online
+```
+
 Licence
 -------
 MIT
