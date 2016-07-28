@@ -1,6 +1,6 @@
 {
   "name": "slideshow-generator",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "Slideshow generator",
   "main": "server.js",
   "bin": "./bin/slideshow-generator",
@@ -46,7 +46,6 @@
     "eslint-plugin-react": "^5.2.2",
     "file-loader": "^0.9.0",
     "glob": "^7.0.5",
-    "highlight.js": "^9.5.0",
     "immutable": "^3.8.1",
     "isparta-instrumenter-loader": "^1.0.1",
     "karma": "^1.1.1",
@@ -104,6 +103,7 @@
     "marked": "^0.3.5",
     "minimist": "^1.2.0",
     "request": "^2.74.0",
+    "highlight.js": "^9.5.0",
     "striptags": "^2.1.1"
   }
 }
