@@ -12,8 +12,8 @@ var _ = require('lodash')
 var DataUri = require('datauri')
 var connect  = require('connect')
 var livereload = require('livereload')
-var striptags = require('striptags')
 var highlight = require('highlight.js')
+var cheerio = require('cheerio')
 
 var build = function(body,input,opt,callback) {
 	if(!opt) opt = {}
@@ -40,27 +40,56 @@ var build = function(body,input,opt,callback) {
 		}
 		pages[pages.length-1].tokens.push(token)
 	})
+	var dataqueue = {}
+	var renderer = new marked.Renderer()
+	renderer.paragraph = function(text) {
+		var ret = '<p>' + text + '</p>'
+		var $ = cheerio.load(ret)
+		$('img').each(function(i,elem) {
+			var href = $(this).attr('src')
+			if(dataqueue[href]) {
+				$(this).attr('src',dataqueue[href].data||dataqueue[href].url)
+			}
+		})
+		return $.html()
+	}
+	renderer.heading = function(text,level) {
+		return `<h${level}>${text}</h${level}>`
+	}
+	renderer.image = function(href,title,text) {
+		var content = dataqueue[href].data||dataqueue[href].url
+		return `<img src="${content}" alt="${text}"/>`
+	}
+	var push_to_dataqueue = function(href) {
+		var check = href.match(/(^https?:)?.*(\.[^\.\?]+)(\?.+)?$/)
+		dataqueue[href] = {
+			remote:input.baseurl || !!check[1],
+			ext:check[2],
+			url:check[1] ? href : (input.baseurl ? input.baseurl+href : path.resolve(input.dir,href))
+		}
+	}
 	async.each(pages,function(page,callback) {
 		async.waterfall([
 			// get resources
 			function(callback) {
-				if(opt.online) {
-					callback(null,{})
-					return
-				}
-				var dataqueue = {}
 				var test = new marked.Renderer()
+				test.paragraph = function(text) {
+					var ret = '<p>' + text + '</p>'
+					var $ = cheerio.load(ret)
+					$('img').each(function(i,elem) {
+						push_to_dataqueue($(this).attr('src'))
+					})
+				}
 				test.image = function(href,title,text) {
-					var check = href.match(/(^https?:)?.*(\.[^\.\?]+)(\?.+)?$/)
-					dataqueue[href] = {
-						remote:!!check[1],
-						ext:check[2],
-						url:check[1] ? href : path.resolve(input.dir,href)
-					}
+					push_to_dataqueue(href)
 				}
 				var tokens = _.cloneDeep(page.tokens)
 				tokens.links = {}
 				marked.parser(tokens,{ renderer:test })
+				if(opt.online) {
+					callback()
+					return
+				}
 				async.each(Object.keys(dataqueue),function(key,callback) {
 					var data = dataqueue[key]
 					if(data.remote) {
@@ -70,13 +99,13 @@ var build = function(body,input,opt,callback) {
 						},function(err,res,body) {
 							var datauri = new DataUri()
 							datauri.format(data.ext, body)
-							dataqueue[key] = datauri.content
+							dataqueue[key].data = datauri.content
 							callback()
 						})
 					} else {
 						DataUri.promise(data.url)
 							.then(function(content) {
-								dataqueue[key] = content
+								dataqueue[key].data = content
 								callback()
 							})
 							.catch(function(err) {
@@ -84,19 +113,11 @@ var build = function(body,input,opt,callback) {
 							})
 					}
 				},function(err) {
-					callback(err,dataqueue)
+					callback(err)
 				})
 			},
 			// generate html
-			function(dataqueue,callback) {
-				var renderer = new marked.Renderer()
-				renderer.heading = function(text,level) {
-					return `<h${level}>${text}</h${level}>`
-				}
-				renderer.image = function(href,title,text) {
-					var content = opt.online ? href : dataqueue[href]
-					return `<img src="${content}" alt="${text}"/>`
-				}
+			function(callback) {
 				tokens = _.cloneDeep(page.tokens)
 				tokens.links = {}
 				var html = marked.parser(tokens,{
@@ -105,9 +126,6 @@ var build = function(body,input,opt,callback) {
 						return highlight.highlightAuto(code).value
 					}
 				})
-				var titletokens = [titletoken]
-				titletokens.links = {}
-				title = striptags(marked.parser(titletokens,{ renderer:renderer }))
 				delete page.tokens
 				page.html = html
 				callback()
@@ -116,9 +134,13 @@ var build = function(body,input,opt,callback) {
 			callback(err)
 		})
 	},function(err) {
+		var titletokens = [titletoken]
+		titletokens.links = {}
+		var titlehtml = marked.parser(titletokens,{ renderer:renderer })
+		var $ = cheerio.load(titlehtml)
 		callback(err,{
 			attributes:content.attributes,
-			title:title,
+			title:$('*').text(),
 			pages:pages
 		})
 	})
@@ -171,6 +193,7 @@ async.waterfall([
 				return c.length
 			}).pop()
 			var input = path.parse(filename)
+			input.baseurl = url.endsWith('/') ? url : url.slice(0,url.length-filename.length-1)+'/'
 			request(url,function(err,res,body) {
 				callback(err,body,input)
 			})
