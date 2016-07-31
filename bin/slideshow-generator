@@ -28,7 +28,7 @@ var build = function(body,input,opt,callback) {
 		smartLists: true,
 		smartypants: true
 	})
-	var title,titletoken
+	var title
 	var pages = []
 	tokens.forEach(function(token) {
 		if(token.type==='heading' || pages.length === 0) {
@@ -36,8 +36,12 @@ var build = function(body,input,opt,callback) {
 				tokens:[]
 			})
 		}
-		if(!titletoken) {
-			titletoken = token
+		if(!title) {
+			var titletokens = [token]
+			titletokens.links = {}
+			var titlehtml = marked.parser(titletokens)
+			var $ = cheerio.load(titlehtml)
+			title = $('*').text().replace(/\s+/g,'')
 		}
 		pages[pages.length-1].tokens.push(token)
 	})
@@ -75,7 +79,7 @@ var build = function(body,input,opt,callback) {
 		var push_to_dataqueue = function(href) {
 			if(dataqueue[href]) return
 			bar.total++
-			var check = href.match(/(^https?:)?.*(\.[^\.\?]+)(\?.+)?$/)
+			var check = href.match(/(^https?:)?.+?(\.[a-z0-9]+)?$/i)
 			dataqueue[href] = {
 				remote:input.baseurl || !!check[1],
 				ext:check[2],
@@ -119,7 +123,8 @@ var build = function(body,input,opt,callback) {
 								return
 							}
 							var datauri = new DataUri()
-							datauri.format(dataqueue[key].ext, body)
+							var ext = dataqueue[key].ext || '.'+res.headers['content-type'].split(/;\s+/)[0].split('/')[1].split('+')[0]
+							datauri.format(ext, body)
 							dataqueue[key].data = datauri.content
 							bar.tick()
 							callback()
@@ -155,11 +160,6 @@ var build = function(body,input,opt,callback) {
 			},
 		],function(err) {
 			if(!title) {
-				var titletokens = [titletoken]
-				titletokens.links = {}
-				var titlehtml = marked.parser(titletokens,{ renderer:renderer })
-				var $ = cheerio.load(titlehtml)
-				title = $('*').text()
 			}
 			callback(err)
 		})
