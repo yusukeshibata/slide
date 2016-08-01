@@ -42,7 +42,7 @@ var build = function(body,input,opt,callback) {
 			titletokens.links = {}
 			var titlehtml = marked.parser(titletokens)
 			var $ = cheerio.load(titlehtml)
-			title = $('*').text().replace(/\s+/g,'')
+			title = $('*').text()
 		}
 		pages[pages.length-1].tokens.push(token)
 	})
