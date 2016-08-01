@@ -6,6 +6,9 @@ import { Link } from 'react-router'
 import DocumentTitle from 'react-document-title'
 import classNames from 'classnames'
 import Slide from 'components/Slide'
+import global from 'modules/global'
+import Formsy from 'formsy-react'
+import Password from 'components/Password'
 
 class App extends Component {
 	constructor(props) {
@@ -15,6 +18,12 @@ class App extends Component {
 		this.onFullscreen = this.onFullscreen.bind(this)
 		this.onStart = this.onStart.bind(this)
 		this.onResize = this.onResize.bind(this)
+		this.onSubmit = this.onSubmit.bind(this)
+	}
+	onSubmit() {
+		let { dispatch } = this.props
+		let model = this.refs.form.getModel()
+		this.context.router.push('/'+model.password+'/')
 	}
 	onResize() {
 		this.setState({
@@ -22,16 +31,25 @@ class App extends Component {
 		})
 	}
 	componentDidMount() {
-		const { dispatch } = this.props
+		const { route,dispatch } = this.props
 		let that = this
-		dispatch(action.slide.fetch())
 		window.addEventListener('resize',this.onResize)
+		if(this.refs.password) {
+			this.refs.password.setFocus()
+		}
+		dispatch(action.slide.fetch(route.password))
 	}
 	componentWillUmount() {
 		window.removeEventListener('resize',this.onResize)
 	}
 	componentWillReceiveProps(nextProps) {
-		const { dispatch } = this.props
+		const { password,route,slide,dispatch } = this.props
+		if((route.password !== nextProps.route.password) || (!slide && nextProps.route.password)) {
+			dispatch(action.slide.fetch(nextProps.route.password))
+		}
+		if(!route.password && password !== nextProps.password) {
+			this.context.router.replace('/'+nextProps.password+'/')
+		}
 	}
 	getFullscreen() {
 		if(document.fullscreenElement) {
@@ -57,7 +75,8 @@ class App extends Component {
 		}
 	}
 	onStart() {
-		this.context.router.push('/0')
+		let { route } = this.props
+		this.context.router.push('/'+route.password+'/0')
 	}
 	render() {
 		const { fullscreen } = this.state
@@ -71,6 +90,14 @@ class App extends Component {
 			<DocumentTitle
 				title={slide ? (route.index!==undefined ? (parseInt(route.index)+1)+'/'+slide.pages.length+' ' : '')+slide.title : 'Slide' }
 			>
+				<div>
+				{ !slide &&
+					<div className='app-input'>
+						<Formsy.Form ref='form' className='app-input-container' onValidSubmit={this.onSubmit}>
+							<Password ref='password' required name='password'/>
+						</Formsy.Form>
+					</div>
+				}
 				{ slide &&
 					<div
 						ref='slide'
@@ -102,6 +129,7 @@ class App extends Component {
 						}
 					</div>
 				}
+				</div>
 			</DocumentTitle>
 		)
 	}
@@ -115,6 +143,7 @@ App.propTypes = {
 function mapStateToProps(state, ownProps) {
 	return {
 		route:ownProps.params,
+		password:state.slide.password,
 		slide:state.slide.data
 	}
 }

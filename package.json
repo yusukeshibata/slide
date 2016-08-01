@@ -1,6 +1,6 @@
 {
   "name": "slideshow-generator",
-  "version": "1.2.4",
+  "version": "1.2.8",
   "description": "Slideshow generator",
   "main": "server.js",
   "bin": "./bin/slideshow-generator",
@@ -45,6 +45,7 @@
     "eslint-loader": "^1.4.1",
     "eslint-plugin-react": "^5.2.2",
     "file-loader": "^0.9.0",
+    "formsy-react": "^0.18.1",
     "glob": "^7.0.5",
     "immutable": "^3.8.1",
     "isparta-instrumenter-loader": "^1.0.1",
@@ -96,6 +97,7 @@
   "dependencies": {
     "cheerio": "^0.20.0",
     "connect": "^3.4.1",
+    "crypto-js": "^3.1.6",
     "datauri": "^1.0.4",
     "front-matter": "^2.1.0",
     "highlight.js": "^9.5.0",

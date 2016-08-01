@@ -15,6 +15,7 @@ var livereload = require('livereload')
 var highlight = require('highlight.js')
 var cheerio = require('cheerio')
 var ProgressBar = require('progress')
+var CryptoJS = require('crypto-js')
 
 var build = function(body,input,opt,callback) {
 	if(!opt) opt = {}
@@ -41,7 +42,7 @@ var build = function(body,input,opt,callback) {
 			titletokens.links = {}
 			var titlehtml = marked.parser(titletokens)
 			var $ = cheerio.load(titlehtml)
-			title = $('*').text().replace(/\s+/g,'')
+			title = $('*').text()
 		}
 		pages[pages.length-1].tokens.push(token)
 	})
@@ -196,15 +197,17 @@ if(argv.watch) {
 			}
 			build(body,input,argv,function(err,data) {
 				var fn = jade.compileFile(__dirname+'/../src/index.jade')
+				var content = JSON.stringify(data)
+				var data = CryptoJS.AES.encrypt(content, '-').toString()
 				res.end(fn({
 					watcher:watcher,
-					data:JSON.stringify(data),
+					data:data,
 					process:process
 				}))
 			})
 		})
 	})
-	var port = argv.port||argv.p||8080
+	var port = argv.port||8080
 	server.listen(port)
 	watcher.watch(input.dir)
 	console.log('Started:http://localhost:'+port+', Watching:',url)
@@ -237,10 +240,12 @@ async.waterfall([
 		})
 	},
 	function(data,input,callback) {
-		var output = argv.output || argv.o || path.resolve(input.dir,input.name+'.html')
+		var output = argv.output || path.resolve(input.dir,input.name+'.html')
 		var fn = jade.compileFile(__dirname+'/../src/index.jade')
+		var content = JSON.stringify(data)
+		var data = CryptoJS.AES.encrypt(content, argv.password||'-').toString()
 		var html = fn({
-			data:JSON.stringify(data),
+			data:data,
 			process:process
 		})
 		fs.writeFile(output,html,function(err) {

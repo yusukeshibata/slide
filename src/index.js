@@ -45,7 +45,9 @@ ReactDOM.render(
 		{ /* Tell the Router to use our enhanced history */ }
 		<Router history={history}>
 			<Route path='/' component={App}>
-				<Route path=':index' component={Slide}/>
+				<Route path=':password'>
+					<Route path=':index' component={Slide}/>
+				</Route>
 			</Route>
 		</Router>
 	</Provider>,
