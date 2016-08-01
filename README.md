@@ -37,7 +37,7 @@ slideshow-generator test.md -p 8080 -watch
 #### Generate
 
 ```
-slideshow-generator test.md -o test.html
+slideshow-generator test.md -o test.html -password loremipsum
 ```
 
 ##### Online mode

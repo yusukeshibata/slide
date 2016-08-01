@@ -26,10 +26,6 @@
 @duration:300ms;
 
 .slide-component {
-	.transition & {
-		overflow:hidden;
-		//.animation(@duration);
-	}
 	font-size:28px;
 	@media(max-width:840px) {
 		font-size:18px;
@@ -61,7 +57,7 @@
 		transition:transform @duration ease-in-out;
 		position:relative;
 	}
-	.dragging &,&.dragging {
+	&.dragging {
 		.slide-container {
 			transition:none;
 		}
