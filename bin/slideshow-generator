@@ -197,9 +197,11 @@ if(argv.watch) {
 			}
 			build(body,input,argv,function(err,data) {
 				var fn = jade.compileFile(__dirname+'/../src/index.jade')
+				var content = JSON.stringify(data)
+				var data = CryptoJS.AES.encrypt(content, '-').toString()
 				res.end(fn({
 					watcher:watcher,
-					data:JSON.stringify(data),
+					data:data,
 					process:process
 				}))
 			})
@@ -246,7 +248,6 @@ async.waterfall([
 			data:data,
 			process:process
 		})
-		console.log(output)
 		fs.writeFile(output,html,function(err) {
 			callback(err,output)
 		})
