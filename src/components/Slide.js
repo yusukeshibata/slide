@@ -24,15 +24,14 @@ class Slide extends Component {
 		this.onMouseDown = this.onMouseDown.bind(this)
 	}
 	onResize() {
-		this.setState({
+		let that = this
+		that.setState({
 			width:window.innerWidth,
-			height:window.innerHeight
-		})
-		document.body.className = classNames({
+			height:window.innerHeight,
 			dragging:true
 		})
 		setTimeout(function() {
-			document.body.className = classNames({
+			that.setState({
 				dragging:false
 			})
 		},100)
@@ -54,7 +53,7 @@ class Slide extends Component {
 		if(index < 0) index = 0
 		if(index > slide.pages.length-1) index = slide.pages.length-1
 		if(route.index !== index) {
-			this.context.router.push('/'+index)
+			this.context.router.push('/'+route.password+'/'+index)
 		}
 	}
 	componentDidMount() {
@@ -89,7 +88,7 @@ class Slide extends Component {
 	}
 	onMouseUp(evt) {
 		let { dx,index,width } = this.state
-		let { slide } = this.props
+		let { route,slide } = this.props
 		this.setState({
 			dragging:false,
 			dx:0
@@ -98,7 +97,7 @@ class Slide extends Component {
 			let newIndex = index + (dx > 0 ? -1 : 1)
 			if(newIndex < 0) newIndex = 0
 			if(newIndex > slide.pages.length-1) newIndex = slide.pages.length-1
-			this.context.router.push('/'+newIndex)
+			this.context.router.push('/'+route.password+'/'+newIndex)
 		}
 	}
 	onMouseMove(evt) {
@@ -120,7 +119,7 @@ class Slide extends Component {
 	}
 	render() {
 		let { fontsize,transition,dragging,dx,index,width,height } = this.state
-		let { slide } = this.props
+		let { route,slide } = this.props
 		let scale = 1
 		let m = matrix({ tx:dx-index*width })
 		document.body.className = classNames({
@@ -130,8 +129,8 @@ class Slide extends Component {
 			<div
 				ref='component'
 				className={classNames({
-					'slide-component':true,
-					'dragging':dragging
+					'dragging':dragging,
+					'slide-component':true
 				})}
 				style={{
 					background:slide.attributes ? slide.attributes.background : undefined,
@@ -159,7 +158,7 @@ class Slide extends Component {
 					})}
 				</div>
 				<div className='slide-footer'>
-					<Link to='/' className='slide-title'>{slide.title}</Link>
+					<Link to={'/'+route.password+'/'} className='slide-title'>{slide.title}</Link>
 					<div className='slide-bar'>
 						<div
 							className='slide-progress'

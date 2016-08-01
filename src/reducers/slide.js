@@ -8,6 +8,7 @@ function reducer(state = {
 		case SLIDE_FETCH:
 			{
 				return Object.assign({}, state, {
+					password:action.password,
 					data:action.data
 				})
 			}

@@ -31,13 +31,13 @@ Commandline interface
 Open server http://localhost:8080
 
 ```
-slideshow-generator test.md -p 8080 -watch
+slideshow-generator test.md --port 8080 --watch
 ```
 
 #### Generate
 
 ```
-slideshow-generator test.md -o test.html
+slideshow-generator test.md --output test.html --password loremipsum
 ```
 
 ##### Online mode
