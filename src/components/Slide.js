@@ -28,11 +28,11 @@ class Slide extends Component {
 		that.setState({
 			width:window.innerWidth,
 			height:window.innerHeight,
-			dragging:true
+			transition:false
 		})
 		setTimeout(function() {
 			that.setState({
-				dragging:false
+				transition:false
 			})
 		},100)
 	}
@@ -91,6 +91,7 @@ class Slide extends Component {
 		let { route,slide } = this.props
 		this.setState({
 			dragging:false,
+			transition:true,
 			dx:0
 		})
 		if(Math.abs(dx) > 50) {
@@ -113,24 +114,22 @@ class Slide extends Component {
 		let target = evt.type.match(/^touch/) ? evt.nativeEvent.touches[0] : evt
 		this.setState({
 			dragging:true,
+			transition:false,
 			x:target.clientX,
 			dx:0
 		})
 	}
 	render() {
-		let { fontsize,transition,dragging,dx,index,width,height } = this.state
+		let { fontsize,transition,dx,index,width,height } = this.state
 		let { route,slide } = this.props
 		let scale = 1
 		let m = matrix({ tx:dx-index*width })
-		document.body.className = classNames({
-			transition:transition
-		})
 		return (
 			<div
 				ref='component'
 				className={classNames({
-					'dragging':dragging,
-					'slide-component':true
+					'slide-component':true,
+					'transition':transition
 				})}
 				style={{
 					background:slide.attributes ? slide.attributes.background : undefined,
